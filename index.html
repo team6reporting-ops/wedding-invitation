@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ms"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jemputan Perkahwinan - Jenetius &amp; Hetrice</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #b2d8d8;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: clamp(8px, 4vw, 20px);
+    font-family: 'EB Garamond', serif;
+    overflow-x: hidden;
+  }
+
+
+  .card {
+    width: 600px;
+    max-width: 100%;
+    background: linear-gradient(160deg, #e0f4f4 0%, #c8ecec 30%, #d4f0e8 60%, #e8f5f0 100%);
+    position: relative;
+    overflow: hidden;
+    padding: clamp(28px, 8vw, 60px) clamp(20px, 8vw, 60px) clamp(24px, 6vw, 50px);
+    border: 1px solid rgba(180,220,210,0.5);
+  }
+
+  /* Floral corner decorations using CSS */
+  .floral-tl, .floral-tr, .floral-bl, .floral-br {
+    position: absolute;
+    pointer-events: none;
+  }
+  .floral-tl { top: 0; left: 0; width: clamp(110px, 30vw, 180px); height: clamp(110px, 30vw, 180px); }
+  .floral-tr { top: 0; right: 0; width: clamp(110px, 30vw, 180px); height: clamp(110px, 30vw, 180px); transform: scaleX(-1); }
+  .floral-bl { bottom: 0; left: 0; width: clamp(70px, 18vw, 110px); height: clamp(70px, 18vw, 110px); transform: scaleY(-1); }
+  .floral-br { bottom: 0; right: 0; width: clamp(70px, 18vw, 110px); height: clamp(70px, 18vw, 110px); transform: scale(-1,-1); }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .draggable-section {
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+
+  .script-header {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(24px, 6.5vw, 32px);
+    color: #2a6b5a;
+    margin-bottom: 28px;
+    line-height: 1.2;
+  }
+
+  .couple-names {
+    margin-bottom: 28px;
+  }
+
+  .bride-groom-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 6.5vw, 36px);
+    font-weight: 600;
+    color: #b8860b;
+    letter-spacing: clamp(1px, 0.5vw, 3px);
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-shadow: 1px 1px 2px rgba(184,134,11,0.2);
+  }
+
+  .ampersand {
+    font-family: 'Great Vibes', cursive;
+    font-size: 42px;
+    color: #b8860b;
+    display: block;
+    margin: 4px 0;
+    line-height: 1;
+  }
+
+  .intro-text {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(14px, 3.8vw, 16px);
+    color: #1a4a3a;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    padding: 0 clamp(0px, 3vw, 20px);
+  }
+
+  .divider-gold {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #b8860b, transparent);
+    margin: 0 auto 24px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 4.5vw, 20px);
+    font-weight: 600;
+    color: #1a4a3a;
+    letter-spacing: clamp(0.5px, 0.4vw, 2px);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-color: #b8860b;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .event-block {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  .day-col {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(13px, 3.6vw, 17px);
+    color: #1a4a3a;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    min-width: clamp(40px, 12vw, 70px);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .date-divider {
+    width: 2px;
+    background: #b8860b;
+    margin: 0 clamp(8px, 3vw, 20px);
+    align-self: stretch;
+    min-height: 80px;
+    flex-shrink: 0;
+  }
+
+  .schedule-col {
+    flex: 1;
+  }
+
+  .schedule-item {
+    margin-bottom: 12px;
+  }
+
+  .time-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(14px, 4vw, 18px);
+    color: #1a4a3a;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+    white-space: normal;
+  }
+
+  .venue-name {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(13px, 3.6vw, 15px);
+    color: #2a6b5a;
+    display: block;
+  }
+
+  .date-large {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(15px, 4.2vw, 20px);
+    color: #1a4a3a;
+    line-height: 1.2;
+    min-width: clamp(40px, 10vw, 55px);
+    text-align: center;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .dress-code {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(13px, 3.8vw, 16px);
+    font-weight: 600;
+    color: #1a4a3a;
+    letter-spacing: 1px;
+    margin: 18px 0;
+  }
+
+  .dress-code .dress-code-label {
+    text-transform: uppercase;
+    color: #b8860b;
+    margin-right: 6px;
+  }
+
+  .note-italic {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: clamp(12.5px, 3.5vw, 14px);
+    color: #2a6b5a;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding: 0 clamp(0px, 2vw, 10px);
+  }
+
+  .ornament {
+    font-size: 20px;
+    color: #b8860b;
+    margin: 6px 0 18px;
+    letter-spacing: 8px;
+  }
+
+  .closing-text {
+    font-family: 'EB Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(14px, 3.8vw, 16px);
+    color: #1a4a3a;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    padding: 0 clamp(0px, 2vw, 10px);
+  }
+
+  .rsvp-button-wrapper {
+    margin-top: 25px;
+    margin-bottom: 15px;
+  }
+
+  .rsvp-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(13px, 3.6vw, 16px);
+    color: #ffffff;
+    font-weight: 600;
+    background-color: #2a6b5a;
+    text-decoration: none;
+    padding: 12px clamp(18px, 6vw, 35px);
+    border-radius: 4px;
+    display: inline-block;
+    letter-spacing: 1px;
+    max-width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+
+  .rsvp-btn:hover {
+    background-color: #1a4a3a;
+    transform: translateY(-1px);
+  }
+
+
+  /* Ranau block with inline date */
+  .ranau-event {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    text-align: left;
+  }
+
+  .ranau-date-divider {
+    width: 2px;
+    background: #b8860b;
+    margin: 0 clamp(8px, 3vw, 20px);
+    flex-shrink: 0;
+    min-height: 80px;
+    align-self: stretch;
+  }
+
+  /* Extra safety net for very narrow phones */
+  @media (max-width: 380px) {
+    .event-block, .ranau-event {
+      gap: 6px;
+    }
+    .day-col {
+      min-width: 34px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .date-large {
+      min-width: 38px;
+      font-size: 14px;
+    }
+    .date-divider, .ranau-date-divider {
+      margin: 0 6px;
+    }
+    .time-label {
+      font-size: 12.5px;
+      letter-spacing: 0.2px;
+    }
+    .venue-name {
+      font-size: 12px;
+    }
+    .bride-groom-name {
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+    .section-title {
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<button id="saveBtn" style="position: fixed; top: 20px; right: 20px; z-index: 1000; padding: 10px 20px; background: rgb(184, 134, 11); color: white; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; border-radius: 4px; cursor: pointer; font-family: sans-serif; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px; display: none;">
+  Save HTML File
+</button>
+
+<script>
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const btn = document.getElementById('saveBtn');
+    btn.style.display = 'none';
+    const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'updated-wedding-invitation.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    btn.style.display = 'block';
+  });
+</script>
+
+<div class="card">
+  <!-- SVGs & Content Blocks Remain Identical -->
+  <svg class="floral-tl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="90" rx="28" ry="12" fill="#5a9e7a" opacity="0.7" transform="rotate(-30 30 90)"></ellipse>
+    <ellipse cx="60" cy="120" rx="32" ry="11" fill="#4a8e6a" opacity="0.6" transform="rotate(20 60 120)"></ellipse>
+    <ellipse cx="15" cy="55" rx="22" ry="9" fill="#6aae8a" opacity="0.65" transform="rotate(-50 15 55)"></ellipse>
+    <ellipse cx="80" cy="70" rx="26" ry="10" fill="#5a9e7a" opacity="0.5" transform="rotate(40 80 70)"></ellipse>
+    <ellipse cx="50" cy="150" rx="30" ry="10" fill="#4a8e6a" opacity="0.5" transform="rotate(-10 50 150)"></ellipse>
+    <ellipse cx="100" cy="100" rx="28" ry="9" fill="#6aae8a" opacity="0.4" transform="rotate(60 100 100)"></ellipse>
+    <circle cx="55" cy="55" r="28" fill="#f4a080" opacity="0.9"></circle>
+    <circle cx="55" cy="55" r="22" fill="#f08060"></circle>
+    <circle cx="55" cy="55" r="15" fill="#e86a50"></circle>
+    <circle cx="55" cy="55" r="9" fill="#d55040"></circle>
+    <ellipse cx="44" cy="40" rx="10" ry="14" fill="#f4a080" opacity="0.8" transform="rotate(-20 44 40)"></ellipse>
+    <ellipse cx="70" cy="42" rx="10" ry="13" fill="#f08060" opacity="0.8" transform="rotate(15 70 42)"></ellipse>
+    <ellipse cx="72" cy="68" rx="9" ry="13" fill="#f4a080" opacity="0.7" transform="rotate(40 72 68)"></ellipse>
+    <ellipse cx="40" cy="70" rx="9" ry="12" fill="#f08060" opacity="0.7" transform="rotate(-35 40 70)"></ellipse>
+    <circle cx="15" cy="130" r="20" fill="#f8b4c8" opacity="0.9"></circle>
+    <circle cx="15" cy="130" r="15" fill="#f49ab4"></circle>
+    <circle cx="15" cy="130" r="9" fill="#e8809e"></circle>
+    <ellipse cx="6" cy="118" rx="8" ry="11" fill="#f8b4c8" opacity="0.8" transform="rotate(-15 6 118)"></ellipse>
+    <ellipse cx="27" cy="119" rx="8" ry="10" fill="#f49ab4" opacity="0.7" transform="rotate(20 27 119)"></ellipse>
+    <circle cx="100" cy="40" r="8" fill="white" opacity="0.85"></circle>
+    <circle cx="97" cy="33" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="107" cy="35" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="107" cy="45" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="97" cy="47" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="100" cy="40" r="3" fill="#f5d060"></circle>
+    <circle cx="130" cy="90" r="7" fill="white" opacity="0.8"></circle>
+    <circle cx="127" cy="84" r="3.5" fill="white" opacity="0.75"></circle>
+    <circle cx="136" cy="86" r="3.5" fill="white" opacity="0.75"></circle>
+    <circle cx="136" cy="94" r="3.5" fill="white" opacity="0.75"></circle>
+    <circle cx="127" cy="95" r="3.5" fill="white" opacity="0.75"></circle>
+    <circle cx="130" cy="90" r="2.5" fill="#f5d060"></circle>
+    <circle cx="80" cy="20" r="2" fill="#d4a017" opacity="0.6"></circle>
+    <circle cx="140" cy="60" r="1.5" fill="#d4a017" opacity="0.5"></circle>
+    <circle cx="30" cy="170" r="2" fill="#d4a017" opacity="0.5"></circle>
+    <circle cx="160" cy="110" r="1.5" fill="#d4a017" opacity="0.4"></circle>
+    <circle cx="20" cy="30" r="1.5" fill="#d4a017" opacity="0.5"></circle>
+  </svg>
+
+  <svg class="floral-tr" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="90" rx="28" ry="12" fill="#5a9e7a" opacity="0.7" transform="rotate(-30 30 90)"></ellipse>
+    <ellipse cx="60" cy="120" rx="32" ry="11" fill="#4a8e6a" opacity="0.6" transform="rotate(20 60 120)"></ellipse>
+    <ellipse cx="15" cy="55" rx="22" ry="9" fill="#6aae8a" opacity="0.65" transform="rotate(-50 15 55)"></ellipse>
+    <ellipse cx="80" cy="70" rx="26" ry="10" fill="#5a9e7a" opacity="0.5" transform="rotate(40 80 70)"></ellipse>
+    <ellipse cx="50" cy="150" rx="30" ry="10" fill="#4a8e6a" opacity="0.5" transform="rotate(-10 50 150)"></ellipse>
+    <circle cx="55" cy="55" r="28" fill="#f4a080" opacity="0.9"></circle>
+    <circle cx="55" cy="55" r="22" fill="#f08060"></circle>
+    <circle cx="55" cy="55" r="15" fill="#e86a50"></circle>
+    <circle cx="55" cy="55" r="9" fill="#d55040"></circle>
+    <ellipse cx="44" cy="40" rx="10" ry="14" fill="#f4a080" opacity="0.8" transform="rotate(-20 44 40)"></ellipse>
+    <ellipse cx="70" cy="42" rx="10" ry="13" fill="#f08060" opacity="0.8" transform="rotate(15 70 42)"></ellipse>
+    <ellipse cx="72" cy="68" rx="9" ry="13" fill="#f4a080" opacity="0.7" transform="rotate(40 72 68)"></ellipse>
+    <ellipse cx="40" cy="70" rx="9" ry="12" fill="#f08060" opacity="0.7" transform="rotate(-35 40 70)"></ellipse>
+    <circle cx="15" cy="130" r="20" fill="#f8b4c8" opacity="0.9"></circle>
+    <circle cx="15" cy="130" r="15" fill="#f49ab4"></circle>
+    <circle cx="15" cy="130" r="9" fill="#e8809e"></circle>
+    <ellipse cx="6" cy="118" rx="8" ry="11" fill="#f8b4c8" opacity="0.8" transform="rotate(-15 6 118)"></ellipse>
+    <ellipse cx="27" cy="119" rx="8" ry="10" fill="#f49ab4" opacity="0.7" transform="rotate(20 27 119)"></ellipse>
+    <circle cx="100" cy="40" r="8" fill="white" opacity="0.85"></circle>
+    <circle cx="97" cy="33" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="107" cy="35" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="107" cy="45" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="97" cy="47" r="4" fill="white" opacity="0.8"></circle>
+    <circle cx="100" cy="40" r="3" fill="#f5d060"></circle>
+    <circle cx="80" cy="20" r="2" fill="#d4a017" opacity="0.6"></circle>
+    <circle cx="140" cy="60" r="1.5" fill="#d4a017" opacity="0.5"></circle>
+    <circle cx="20" cy="30" r="1.5" fill="#d4a017" opacity="0.5"></circle>
+  </svg>
+
+  <svg class="floral-bl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="90" rx="28" ry="12" fill="#5a9e7a" opacity="0.7" transform="rotate(-30 30 90)"></ellipse>
+    <ellipse cx="60" cy="120" rx="32" ry="11" fill="#4a8e6a" opacity="0.6" transform="rotate(20 60 120)"></ellipse>
+    <ellipse cx="80" cy="70" rx="26" ry="10" fill="#5a9e7a" opacity="0.5" transform="rotate(40 80 70)"></ellipse>
+    <ellipse cx="50" cy="150" rx="30" ry="10" fill="#4a8e6a" opacity="0.5" transform="rotate(-10 50 150)"></ellipse>
+    <circle cx="55" cy="55" r="26" fill="#f8b4c8" opacity="0.9"></circle>
+    <circle cx="55" cy="55" r="20" fill="#f49ab4"></circle>
+    <circle cx="55" cy="55" r="13" fill="#e8809e"></circle>
+    <circle cx="55" cy="55" r="7" fill="#d46688"></circle>
+    <ellipse cx="44" cy="40" rx="9" ry="13" fill="#f8b4c8" opacity="0.8" transform="rotate(-20 44 40)"></ellipse>
+    <ellipse cx="69" cy="42" rx="9" ry="12" fill="#f49ab4" opacity="0.8" transform="rotate(15 69 42)"></ellipse>
+    <circle cx="110" cy="110" r="18" fill="#f4a080" opacity="0.85"></circle>
+    <circle cx="110" cy="110" r="13" fill="#f08060"></circle>
+    <circle cx="110" cy="110" r="8" fill="#e86a50"></circle>
+    <circle cx="80" cy="20" r="2" fill="#d4a017" opacity="0.6"></circle>
+    <circle cx="30" cy="170" r="2" fill="#d4a017" opacity="0.5"></circle>
+    <circle cx="20" cy="30" r="1.5" fill="#d4a017" opacity="0.5"></circle>
+  </svg>
+
+  <svg class="floral-br" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="90" rx="28" ry="12" fill="#5a9e7a" opacity="0.7" transform="rotate(-30 30 90)"></ellipse>
+    <ellipse cx="60" cy="120" rx="32" ry="11" fill="#4a8e6a" opacity="0.6" transform="rotate(20 60 120)"></ellipse>
+    <ellipse cx="80" cy="70" rx="26" ry="10" fill="#5a9e7a" opacity="0.5" transform="rotate(40 80 70)"></ellipse>
+    <ellipse cx="50" cy="150" rx="30" ry="10" fill="#4a8e6a" opacity="0.5" transform="rotate(-10 50 150)"></ellipse>
+    <circle cx="55" cy="55" r="26" fill="#f8b4c8" opacity="0.9"></circle>
+    <circle cx="55" cy="55" r="20" fill="#f49ab4"></circle>
+    <circle cx="55" cy="55" r="13" fill="#e8809e"></circle>
+    <circle cx="55" cy="55" r="7" fill="#d46688"></circle>
+    <ellipse cx="44" cy="40" rx="9" ry="13" fill="#f8b4c8" opacity="0.8" transform="rotate(-20 44 40)"></ellipse>
+    <ellipse cx="69" cy="42" rx="9" ry="12" fill="#f49ab4" opacity="0.8" transform="rotate(15 69 42)"></ellipse>
+    <circle cx="110" cy="110" r="18" fill="#f4a080" opacity="0.85"></circle>
+    <circle cx="110" cy="110" r="13" fill="#f08060"></circle>
+    <circle cx="110" cy="110" r="8" fill="#e86a50"></circle>
+    <circle cx="80" cy="20" r="2" fill="#d4a017" opacity="0.6"></circle>
+    <circle cx="30" cy="170" r="2" fill="#d4a017" opacity="0.5"></circle>
+  </svg>
+
+  <div class="content" id="drag-container">
+
+    <div class="draggable-section">
+      <div class="script-header">Jemputan ke Majlis Perkahwinan</div>
+      <div class="couple-names">
+        <div class="bride-groom-name">Jenetius Miun</div>
+        <span class="ampersand">&amp;</span>
+        <div class="bride-groom-name">Hetrice Hunsoi</div>
+      </div>
+      <div class="divider-gold"></div>
+    </div>
+
+    <div class="draggable-section">
+      <p class="intro-text">
+        Dengan hormatnya dan penuh kesyukuran, kami menjemput<br>
+        Datuk/Datin/Tuan/Puan/Encik/Cik untuk menghadiri Majlis<br>
+        Perkahwinan kami pada ketetapan seperti berikut:
+      </p>
+    </div>
+
+    <div class="draggable-section">
+      <div class="section-title">Majlis Di Tenom :</div>
+      <div class="event-block" style="justify-content:center;">
+        <div class="day-col">SABTU</div>
+        <div class="date-divider"></div>
+        <div class="date-large"><div><br></div>29<br>OGOS<br>2026</div>
+        <div class="date-divider" style="margin-left:20px;"></div>
+        <div class="schedule-col">
+          <div class="schedule-item">
+            <span class="time-label">UPACARA PERKAHWINAN<br>12:00 PM<br></span>
+            <span class="venue-name">Gereja Katolik St. Anthony</span>
+          </div>
+          <div class="schedule-item">
+            <span class="time-label">RESEPSI<br>06:00 PM</span>
+            <span class="venue-name">Dewan SM Tshung Tsin</span>
+          </div>
+        </div>
+      </div>
+      <p class="dress-code">
+        <span class="dress-code-label">Tema Pakaian:</span>Teal Green atau Pakaian Tradisional
+      </p>
+      <p class="note-italic">
+        *Sekiranya Tuan/Puan/Encik/Cik ingin menghadiri majlis resepsi di<br>
+        Tenom, sila buat pengesahan kehadiran pada link yang disertakan<br>
+        bersama jemputan ini
+      </p>
+      <div class="divider-gold"></div>
+      <div class="ornament">❧ ✦ ❧</div>
+      <div class="divider-gold" style="margin-bottom:22px;"></div>
+    </div>
+
+    <div class="draggable-section">
+      <div class="section-title">Majlis Di Ranau :</div>
+      <div class="ranau-event" style="justify-content:center; margin-bottom:20px;">
+        <div class="day-col">ISNIN</div>
+        <div class="ranau-date-divider"></div>
+        <div class="date-large">31<br>OGOS<br>2026</div>
+        <div class="ranau-date-divider" style="margin-left:20px;"></div>
+        <div class="schedule-col">
+          <div class="schedule-item">
+            <span class="time-label">KETIBAAN PENGANTIN<br>02:00 PM</span>
+            <span class="venue-name">Kediaman Keluarga di Kampung Sarapong</span>
+          </div>
+        </div>
+      </div>
+      <p class="note-italic">
+        Tiada Tema pakaian dan pengesahan kehadiran tidak diperlukan
+      </p>
+      <div class="divider-gold"></div>
+    </div>
+
+    <div class="draggable-section">
+      <p class="closing-text" style="margin-top:20px;">
+        Semoga dengan kehadiran<br>
+        Datuk/Datin/Tuan/Puan/Encik/Cik, akan menyerikan lagi majlis kami
+      </p>
+      <div class="rsvp-button-wrapper">
+        <a href="https://minkaco.com/jenetiushetrice" class="rsvp-btn" target="_blank">LINK KEHADIRAN DAN UCAPAN</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body></html>
+
